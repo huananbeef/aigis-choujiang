@@ -6,10 +6,10 @@
  * @LastEditTime: 2019-12-29 22:22:30
  */
 
- export default [
+export default [
   {
     path: '/lotteryDraw',
     name: 'LotteryDraw',
     component: () => import('@/pages/lotteryDraw/lotteryDraw.vue')
   }
- ]
+]
