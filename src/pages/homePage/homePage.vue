@@ -5,7 +5,8 @@
       <el-header>Header</el-header>
       <el-container>
         <el-aside width="200px">Aside</el-aside>
-        <el-main>Main</el-main>
+        <el-main>{{time}}</el-main>
+        <input v-model="ocrName" placeholder="请输入内容">
         <el-footer>Footer</el-footer>
       </el-container>
     </el-container>
@@ -48,7 +49,8 @@ export default {
   name: 'homePage',
   data(){
     return {
-
+      time:'',
+      ocrName:''
     }
   },
   methods: {
@@ -57,7 +59,49 @@ export default {
     },
     handleClose(key,keyPath){
       console.log(key,keyPath)
+    },
+    showDate(){},
+    // 清除首字母空格
+    deleteFrist(infos){
+      console.log('infos',infos)
+      // // js正则验证标点符号+空格
+      // var regFunc = /^[\p{P}|\s]/
+      // var CNPunctuation = /^[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/
+      // // // js正则验证特殊字符
+      // var regEnF = /^[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/
+      // var regCnF = /^[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/
+      // if(CNPunctuation.test(infos)){
+      //   console.log('含有中文字符,不通过校验')
+      //   return false
+      // }
+      // if(regFunc.test(infos)){
+      //   console.log('含有标点符号+空格,不通过校验')
+      //   return false
+      // }
+      // if(regEnF.test(infos) || regCnF.test(infos)){
+      //   console.log('含有特殊字符,不通过校验')
+      //   return false
+      // }
+      // 只允许输入中英文+数字首字母
+      var reg = /^([\u4e00-\u9fa5a-z|0-9]+$)/
+      if(infos.length>0){
+        console.log('可以校验')
+      }else{
+        return false
+      }
+      if(reg.test(infos)){
+        console.log('通过')
+      }else{
+        console.log('不通过校验')
+        this.ocrName = ''
+      }
     }
+  },
+  watch:{
+    'ocrName':'deleteFrist'
+  },
+  mounted(){
+    this.showDate()
   }
 }
 </script>
