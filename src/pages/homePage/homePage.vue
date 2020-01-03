@@ -83,7 +83,7 @@ export default {
       //   return false
       // }
       // 只允许输入中英文+数字首字母
-      var reg = /^([\u4e00-\u9fa5a-z|0-9]+$)/
+      var reg = /^([\u4e00-\u9fa5|a-z|0-9])/
       if(infos.length>0){
         console.log('可以校验')
       }else{
