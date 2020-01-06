@@ -6,7 +6,7 @@
       <el-container>
         <el-aside width="200px">Aside</el-aside>
         <el-main>{{time}}</el-main>
-        <input v-model="ocrName" placeholder="请输入内容">
+        <input v-model="ocrName" placeholder="请输入内容" @blur="loseFocusOcrName(ocrName)">
         <el-footer>Footer</el-footer>
       </el-container>
     </el-container>
@@ -66,6 +66,7 @@ export default {
       console.log('infos',infos)
       // // js正则验证标点符号+空格
       // var regFunc = /^[\p{P}|\s]/
+      // 中文标点符号
       // var CNPunctuation = /^[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/
       // // // js正则验证特殊字符
       // var regEnF = /^[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/
@@ -83,18 +84,53 @@ export default {
       //   return false
       // }
       // 只允许输入中英文+数字首字母
-      var reg = /^([\u4e00-\u9fa5|a-z|0-9])/
+      // var regFirst = /^([\u4e00-\u9fa5|a-z|0-9])/
+      // var regFirst = /^([\u4e00-\u9fa5|a-z|0-9])/
+
+      // 规则校验 中文标点符号+空格
+      var Punctuation = /^([\s|\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5])/
+      // 规则校验 英文符号
+      // var EnPunctu = /^([\x21-\x2f\x3a-\x40\x5b-\x60\x7B-\x7F])/
+      // var funcArr = ['','~','!','@','#','$','%','^','&','*','(',')','_','+','{','}']
+      // 中文半角符号 `-=[]\;',./\/*-+            ~!@#$%^&*()_+{}|:"<>?/*-"  
+      // 中文全角符号 ·－＝【】＼；’，。、＼／＊－＋
+      // 英文半角符号 `-=[]\;',./\/*-+
+      // 英文全角符号 ·－＝【】＼；‘，。、／＊－＋
+      // 英文全角符号 ~！@#￥%……&*（）——+｛｝|：“《》？|/*-+
+
+      // eslint-disable-next-line no-useless-escape
+      var patrn = /^([\s|`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、｛｝＃＠＆％×＋｜／＊－＝＼．＄＾＿＂＜＞])/
+      // 漏的中文全角字符
+
       if(infos.length>0){
         console.log('可以校验')
       }else{
         return false
       }
-      if(reg.test(infos)){
-        console.log('通过')
-      }else{
-        console.log('不通过校验')
+      if(patrn.test(infos) || Punctuation.test(infos)){
         this.ocrName = ''
+        console.log('含有非法首字符，不通过首字符校验')
+        
+      }else{
+        // this.ocrName = ''
+        console.log('通过首字符校验')
       }
+    },
+    // 失去焦点时的校验
+    loseFocusOcrName(infos){
+      // eslint-disable-next-line no-useless-escape
+      var regEnd = /([\s|`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、｛｝＃＠＆％×＋｜／＊－＝＼．＄＾＿＂＜＞])$/
+      var Punctuation = /([\s|\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5])$/
+      if((regEnd.test(infos) || Punctuation.test(infos)) && infos.length > 1){
+        this.ocrName = infos.substring(0,infos.length-1)
+          console.log('ocrName',this.ocrName)
+          console.log('末尾字符不通过校验')
+        }else if(infos.length == 1){
+          console.log('一位数不进行末尾校验')
+        }else{
+          console.log('末尾字符通过校验')
+          
+        }
     }
   },
   watch:{
